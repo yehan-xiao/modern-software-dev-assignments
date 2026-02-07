@@ -8,7 +8,15 @@ load_dotenv()
 NUM_RUNS_TIMES = 5
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """You are a math expert. When solving modular exponentiation problems like a^n (mod m), follow these steps:
+
+1. Calculate the first several powers of the base modulo m to find the repeating cycle
+2. Determine the cycle length
+3. Find n mod (cycle length) to reduce the exponent
+4. Use the reduced exponent to find the answer from the cycle
+
+Show your work step by step, listing out the powers until you find the pattern.
+"""
 
 
 USER_PROMPT = """

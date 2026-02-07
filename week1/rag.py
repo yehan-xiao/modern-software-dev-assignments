@@ -37,7 +37,9 @@ QUESTION = (
 
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """You are a Python coding assistant.
+Write code that strictly follows the provided API documentation.
+Use the requests library for HTTP requests."""
 
 
 # For this simple example
@@ -56,7 +58,7 @@ def YOUR_CONTEXT_PROVIDER(corpus: List[str]) -> List[str]:
 
     For example, return [] to simulate missing context, or [corpus[0]] to include the API docs.
     """
-    return []
+    return corpus  # 返回所有文档作为上下文
 
 
 def make_user_prompt(question: str, context_docs: List[str]) -> str:

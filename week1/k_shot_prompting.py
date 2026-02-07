@@ -7,7 +7,17 @@ load_dotenv()
 NUM_RUNS_TIMES = 5
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """
+I reverse words. I only output the reversed word.
+
+ab -> ba
+abc -> cba
+abcd -> dcba
+abcde -> edcba
+abcdef -> fedcba
+abcdefgh -> hgfedcba
+abcdefghij -> jihgfedcba
+"""
 
 USER_PROMPT = """
 Reverse the order of letters in the following word. Only output the reversed word, no other text:
