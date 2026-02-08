@@ -53,14 +53,38 @@ week2/tests/test_extract.py: lines 3-5, 28-97
 ```
 
 ### Exercise 3: Refactor Existing Code for Clarity
-Prompt: 
+Prompt:
 ```
-TODO
-``` 
+Refactor the backend code focusing on: (1) well-defined API contracts/schemas — replace all Dict[str, Any] request/response types with Pydantic BaseModel classes for automatic validation and API documentation; (2) app lifecycle — move init_db() from module-level side effect to FastAPI lifespan context manager so the database initializes on server startup rather than on import; (3) fix a bug in the mark_done endpoint where bool("false") evaluates to True due to Python truthy semantics; (4) error handling — add try/except around database and extraction operations in write endpoints to return clear 500 error messages instead of unhandled exceptions.
+```
 
 Generated/Modified Code Snippets:
 ```
-TODO: List all modified code files with the relevant line numbers. (We anticipate there may be multiple scattered changes here – just produce as comprehensive of a list as you can.)
+week2/app/routers/notes.py: lines 6, 13-19, 25-29, 32-37
+- Line 6: Added `from pydantic import BaseModel`
+- Lines 13-14: Added CreateNoteRequest schema (content: str)
+- Lines 16-19: Added NoteResponse schema (id, content, created_at)
+- Lines 25-31: Refactored create_note() to use CreateNoteRequest input and NoteResponse output, removing manual validation; added try/except error handling for database operations
+- Lines 34-39: Refactored get_single_note() to use NoteResponse output
+
+week2/app/routers/action_items.py: lines 3, 6, 14-38, 44-53, 56-59
+- Line 3: Cleaned up imports (removed unused Any, Dict, List)
+- Line 6: Added `from pydantic import BaseModel`
+- Lines 14-16: Added ExtractRequest schema (text: str, save_note: bool = False)
+- Lines 18-20: Added ActionItemOut schema (id, text)
+- Lines 22-24: Added ExtractResponse schema (note_id, items)
+- Lines 26-31: Added ActionItemDetail schema (id, note_id, text, done, created_at)
+- Lines 33-34: Added MarkDoneRequest schema (done: bool = True) — fixes bug where "false" string was treated as True
+- Lines 36-38: Added MarkDoneResponse schema (id, done)
+- Lines 44-57: Refactored extract() to use Pydantic models; added try/except error handling for extraction and database operations
+- Lines 60-69: Refactored list_all() to use Pydantic models
+- Lines 72-78: Refactored mark_done() to use MarkDoneRequest/MarkDoneResponse; added try/except error handling
+
+week2/app/main.py: lines 3, 14-18, 20
+- Line 3: Added `from contextlib import asynccontextmanager`
+- Lines 14-18: Added lifespan context manager wrapping init_db()
+- Line 20: Passed lifespan to FastAPI constructor
+- Removed unused imports (Any, Dict, Optional, HTTPException, db)
 ```
 
 
