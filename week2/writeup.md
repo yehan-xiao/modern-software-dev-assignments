@@ -89,26 +89,41 @@ week2/app/main.py: lines 3, 14-18, 20
 
 
 ### Exercise 4: Use Agentic Mode to Automate a Small Task
-Prompt: 
+Prompt:
 ```
-TODO
-``` 
+Part 1: Integrate the LLM-powered extraction as a new endpoint. Add a POST /action-items/extract-llm route that calls extract_action_items_llm() with the same request/response schema as the existing /extract endpoint. Update the frontend to add an "Extract LLM" button that triggers extraction via the new endpoint.
+
+Part 2: Expose a GET /notes endpoint to retrieve all saved notes. Add a "List Notes" button to the frontend that fetches and displays them.
+```
 
 Generated Code Snippets:
 ```
-TODO: List all modified code files with the relevant line numbers.
+week2/app/routers/action_items.py: lines 9, 61-75
+- Line 9: Added extract_action_items_llm to the import
+- Lines 61-75: Added POST /action-items/extract-llm endpoint that calls extract_action_items_llm(), reusing ExtractRequest/ExtractResponse schemas
+
+week2/app/routers/notes.py: lines 35-41
+- Lines 35-41: Added GET /notes endpoint (list_notes) that calls db.list_notes() and returns List[NoteResponse]
+
+week2/frontend/index.html: lines 27-28, 32, 73-107, 109-129
+- Line 27: Added "Extract LLM" button
+- Line 28: Added "List Notes" button
+- Line 32: Added <div id="notes"> container for displaying notes
+- Lines 73-107: JavaScript handler for "Extract LLM" button — POSTs to /action-items/extract-llm and renders action item checkboxes
+- Lines 109-129: JavaScript handler for "List Notes" button — GETs /notes and displays each note with ID, timestamp, and content
 ```
 
 
 ### Exercise 5: Generate a README from the Codebase
-Prompt: 
+Prompt:
 ```
-TODO
-``` 
+Analyze the current week2 codebase — including main.py, routers, services, db.py, tests, and pyproject.toml — and generate a well-structured README.md. Include: a brief project overview, setup and run instructions (conda, poetry, Ollama), a table of all API endpoints with methods and descriptions, and instructions for running the test suite.
+```
 
 Generated Code Snippets:
 ```
-TODO: List all modified code files with the relevant line numbers.
+week2/README.md: entire file (new)
+- Generated a complete README covering project overview, prerequisites, installation steps, how to run the server, API endpoint tables (Notes, Action Items, Frontend), and test instructions.
 ```
 
 

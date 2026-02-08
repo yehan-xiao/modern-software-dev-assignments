@@ -6,7 +6,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 from .. import db
-from ..services.extract import extract_action_items
+from ..services.extract import extract_action_items, extract_action_items_llm
 
 
 # --- Pydantic Schema ---
@@ -52,6 +52,23 @@ def extract(payload: ExtractRequest) -> ExtractResponse:
         ids = db.insert_action_items(items, note_id=note_id)
     except Exception:
         raise HTTPException(status_code=500, detail="failed to extract action items")
+    return ExtractResponse(
+        note_id=note_id,
+        items=[ActionItemOut(id=i, text=t) for i, t in zip(ids, items)],
+    )
+
+
+@router.post("/extract-llm", response_model=ExtractResponse)
+def extract_llm(payload: ExtractRequest) -> ExtractResponse:
+    try:
+        note_id: Optional[int] = None
+        if payload.save_note:
+            note_id = db.insert_note(payload.text)
+
+        items = extract_action_items_llm(payload.text)
+        ids = db.insert_action_items(items, note_id=note_id)
+    except Exception:
+        raise HTTPException(status_code=500, detail="failed to extract action items via LLM")
     return ExtractResponse(
         note_id=note_id,
         items=[ActionItemOut(id=i, text=t) for i, t in zip(ids, items)],
