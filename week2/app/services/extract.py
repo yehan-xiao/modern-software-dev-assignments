@@ -3,8 +3,7 @@ from __future__ import annotations
 import os
 import re
 from typing import List
-import json
-from typing import Any
+from pydantic import BaseModel
 from ollama import chat
 from dotenv import load_dotenv
 
@@ -64,6 +63,40 @@ def extract_action_items(text: str) -> List[str]:
         seen.add(lowered)
         unique.append(item)
     return unique
+
+
+# Pydantic model for structured LLM output
+class ActionItems(BaseModel):
+    action_items: List[str]
+
+
+def extract_action_items_llm(text: str) -> List[str]:
+    """Extract action items from text using an LLM via Ollama with structured output."""
+    if not text or not text.strip():
+        return []
+
+    response = chat(
+        model="llama3.1:8b",
+        messages=[
+            {
+                "role": "system",
+                "content": (
+                    "You extract action items from notes. "
+                    "Return a JSON object with an 'action_items' key containing an array of action item strings. "
+                    "If there are no action items, return {\"action_items\": []}."
+                ),
+            },
+            {
+                "role": "user",
+                "content": f"Extract all action items from the following notes:\n\n{text}",
+            },
+        ],
+        format=ActionItems.model_json_schema(),
+    )
+
+    # Parse using the Pydantic model for validation
+    parsed = ActionItems.model_validate_json(response.message.content)
+    return [item for item in parsed.action_items if item]
 
 
 def _looks_imperative(sentence: str) -> bool:
